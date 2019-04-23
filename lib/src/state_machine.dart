@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+part of aho_corasick;
 
 typedef Transition<State, Input> = State Function(
     {State activeState, Input input});

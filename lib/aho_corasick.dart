@@ -4,4 +4,11 @@
 /// to search for any of those
 library aho_corasick;
 
-export 'src/aho_corasick.dart';
+import 'package:meta/meta.dart';
+import 'dart:collection';
+import 'dart:math';
+
+part 'src/aho_corasick.dart';
+part 'src/match.dart';
+part 'src/state_machine.dart';
+part 'src/word_state.dart';

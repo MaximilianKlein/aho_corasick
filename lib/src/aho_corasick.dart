@@ -1,10 +1,4 @@
-import 'dart:collection';
-import 'dart:math';
-
-import 'package:aho_corasick/src/match.dart';
-import 'package:aho_corasick/src/state_machine.dart';
-import 'package:aho_corasick/src/word_state.dart';
-import 'package:meta/meta.dart';
+part of aho_corasick;
 
 /// Pattern Matching algorithm that searches for all occurences of
 /// any word in the word list.

@@ -1,3 +1,5 @@
+part of aho_corasick;
+
 class WordState {
   const WordState(
       {this.index, this.words, this.isFinal = false, this.failure = -1});
