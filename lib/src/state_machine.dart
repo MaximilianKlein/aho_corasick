@@ -21,7 +21,10 @@ class StateMachineState<State, Input> {
 }
 
 class StateMachine<State, Input> {
-  StateMachine({@required this.states, @required this.isSuccessState, @required this.transition}) {
+  StateMachine(
+      {@required this.states,
+      @required this.isSuccessState,
+      @required this.transition}) {
     _initializeStateIndexMap();
   }
 
@@ -48,5 +51,6 @@ class StateMachine<State, Input> {
     }
   }
 
-  StateMachineState<State, Input> createState() => StateMachineState(stateMachine: this);
+  StateMachineState<State, Input> createState() =>
+      StateMachineState(stateMachine: this);
 }

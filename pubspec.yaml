@@ -1,8 +1,8 @@
 name: aho_corasick
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
+description: Pattern Matching implementation of aho_corasick using a state machine to find all matches in a text for a large number of words.
+version: 1.0.1
 homepage: https://github.com/MaximilianKlein/aho_corasick
-author: Maximilian Klein <email@example.com>
+author: Maximilian Klein <maximilian.klein@freiheit.com>
 
 environment:
   sdk: '>=2.1.0 <3.0.0'

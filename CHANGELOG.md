@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Fixed linter issues and updated description.
+
 ## 1.0.0
 
 - Initial version of the Aho-Corasick algorithm with a basic
