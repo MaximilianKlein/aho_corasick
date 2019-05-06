@@ -5,4 +5,9 @@ class Match {
 
   final int startIndex;
   final String word;
+
+  Match copyWith({int startIndex, String word}) => Match(
+        startIndex: startIndex ?? this.startIndex,
+        word: word ?? this.word,
+      );
 }

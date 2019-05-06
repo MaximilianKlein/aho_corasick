@@ -6,16 +6,21 @@ class AhoCorasick {
   const AhoCorasick._({
     @required this.stateMachine,
     @required int longestPattern,
+    @required this.separateBySpaces,
   }) : _longestPattern = longestPattern;
 
   /// initialize the aho corasick algorithm with a given list of words
-  /// this will create the state machine
-  factory AhoCorasick.fromWordList(List<String> patterns) {
+  /// this will create the state machine. If you want to force that recognized
+  /// words are either at the beginning / end or are surounded by spaces
+  /// set [separateBySpaces] to true
+  factory AhoCorasick.fromWordList(List<String> patterns,
+      {bool separateBySpaces = false}) {
     // initial state is the empty word
     List<WordState> states = [WordState(index: 0, words: [], failure: 0)];
     var longest = 0;
     Map<int, Map<String, int>> transitionMap = {};
-    patterns.forEach((pattern) {
+    patterns.forEach((inputPattern) {
+      final pattern = separateBySpaces ? ' $inputPattern ' : inputPattern;
       int curStateIndex = 0;
       longest = max(longest, pattern.length);
       for (var i = 0; i < pattern.length; i++) {
@@ -77,6 +82,7 @@ class AhoCorasick {
       }
     }
     return AhoCorasick._(
+        separateBySpaces: separateBySpaces,
         longestPattern: longest,
         stateMachine: StateMachine<WordState, String>(
             states: states,
@@ -100,6 +106,10 @@ class AhoCorasick {
   /// through the full text by "knowing" how long a pattern can be
   /// this is not optimal, but good enough for now ;)
   final int _longestPattern;
+
+  /// specifies whether patterns must be separated by spaces or if
+  /// they can found anywhere
+  final bool separateBySpaces;
 
   Match _firstMatchLongest(String input) {
     final state = stateMachine.createState();
@@ -128,6 +138,11 @@ class AhoCorasick {
     return null;
   }
 
+  Match _fixShiftedMatch(Match match) => separateBySpaces && match != null ? Match(
+      startIndex: match.startIndex,
+      word: match.word.substring(1, match.word.length - 1))
+      : match;
+
   /// returns the first match or null if none was found
   /// optionally you can specify `longest: true` to search for the
   /// longest match at a specific position. If you have the words
@@ -136,15 +151,16 @@ class AhoCorasick {
   /// checked enough positions to find all possible longer words and then
   /// return `'abcd'`
   Match firstMatch(String input, {bool longest = false}) {
+    final fullInput = separateBySpaces ? ' $input ' : input;
     if (longest) {
-      return _firstMatchLongest(input);
+      return _fixShiftedMatch(_firstMatchLongest(fullInput));
     }
     final state = stateMachine.createState();
-    for (var i = 0; i < input.length; i++) {
-      state.performStep(input[i]);
+    for (var i = 0; i < fullInput.length; i++) {
+      state.performStep(fullInput[i]);
       if (state.activeStateIsSuccess) {
         final word = state.activeState.words.first;
-        return Match(startIndex: i - word.length + 1, word: word);
+        return _fixShiftedMatch(Match(startIndex: i - word.length + 1, word: word));
       }
     }
     return null;
@@ -152,15 +168,17 @@ class AhoCorasick {
 
   /// returns all matches found. If none were found it returns []
   List<Match> matches(String input) {
+    final fullInput = separateBySpaces ? ' $input ' : input;
     final state = stateMachine.createState();
     final results = <Match>[];
-    var smallestStartIndex = input.length;
-    for (var i = 0; i < input.length; i++) {
-      state.performStep(input[i]);
+    var smallestStartIndex = fullInput.length;
+    for (var i = 0; i < fullInput.length; i++) {
+      state.performStep(fullInput[i]);
       if (state.activeStateIsSuccess) {
         results.addAll(state.activeState.words.map((word) {
           smallestStartIndex = min(smallestStartIndex, i - word.length + 1);
-          return Match(startIndex: i - word.length + 1, word: word);
+          return _fixShiftedMatch(Match(
+              startIndex: i - word.length + 1, word: word));
         }));
       }
     }
