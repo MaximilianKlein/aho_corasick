@@ -1,6 +1,6 @@
 name: aho_corasick
 description: Pattern Matching implementation of aho_corasick using a state machine to find all matches in a text for a large number of words.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/MaximilianKlein/aho_corasick
 author: Maximilian Klein <maximilian.klein@freiheit.com>
 
@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.1.0 <3.0.0'
 
 dependencies:
-  meta: ^1.1.7
+  meta: ^1.1.6
 
 dev_dependencies:
   pedantic: ^1.0.0
