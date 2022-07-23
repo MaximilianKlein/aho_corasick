@@ -1,6 +1,6 @@
 import 'package:aho_corasick/aho_corasick.dart';
 
-main() {
+void main() {
   final aho = AhoCorasick.fromWordList(['abc', 'bcd', 'bcde']);
   final results = aho.matches('search in abcd');
   print(results
@@ -8,5 +8,5 @@ main() {
       .join('\n'));
 
   final longest = aho.firstMatch('bcde', longest: true);
-  print(longest.word);
+  print(longest?.word ?? 'no match found');
 }

@@ -1,18 +1,18 @@
 part of aho_corasick;
 
 typedef Transition<State, Input> = State Function(
-    {State activeState, Input input});
+    {required State activeState, required Input input});
 
 class StateMachineState<State, Input> {
-  StateMachineState({this.stateMachine});
+  StateMachineState({required this.stateMachine});
   final StateMachine<State, Input> stateMachine;
 
-  int _activeStateIndex = 0;
+  late int _activeStateIndex = 0;
   State get activeState => stateMachine.states[_activeStateIndex];
 
   bool get activeStateIsSuccess => stateMachine.isSuccessState(activeState);
 
-  int _stateIndex(State state) => stateMachine.stateIndexMap[state];
+  int _stateIndex(State state) => stateMachine.stateIndexMap?[state] ?? 0;
 
   void performStep(Input input) {
     _activeStateIndex = _stateIndex(
@@ -22,9 +22,9 @@ class StateMachineState<State, Input> {
 
 class StateMachine<State, Input> {
   StateMachine(
-      {@required this.states,
-      @required this.isSuccessState,
-      @required this.transition}) {
+      {required this.states,
+      required this.isSuccessState,
+      required this.transition}) {
     _initializeStateIndexMap();
   }
 
@@ -37,7 +37,7 @@ class StateMachine<State, Input> {
   /// the transitions that define how this automaton works
   final Transition<State, Input> transition;
 
-  Map<State, int> stateIndexMap;
+  Map<State, int>? stateIndexMap;
 
   // create the map that assigns the index to every state
   void _initializeStateIndexMap() {
@@ -47,7 +47,7 @@ class StateMachine<State, Input> {
     }
     stateIndexMap = {};
     for (var i = 0; i < states.length; i++) {
-      stateIndexMap[states[i]] = i;
+      stateIndexMap?[states[i]] = i;
     }
   }
 

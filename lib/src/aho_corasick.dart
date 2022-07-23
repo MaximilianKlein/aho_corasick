@@ -1,12 +1,20 @@
 part of aho_corasick;
 
+extension IterableNullableExtension<T extends Object> on Iterable<T?> {
+  Iterable<T> whereNotNull() sync* {
+    for (var element in this) {
+      if (element != null) yield element;
+    }
+  }
+}
+
 /// Pattern Matching algorithm that searches for all occurences of
 /// any word in the word list.
 class AhoCorasick {
   const AhoCorasick._({
-    @required this.stateMachine,
-    @required int longestPattern,
-    @required this.separateBySpaces,
+    required this.stateMachine,
+    required int longestPattern,
+    required this.separateBySpaces,
   }) : _longestPattern = longestPattern;
 
   /// initialize the aho corasick algorithm with a given list of words
@@ -16,12 +24,13 @@ class AhoCorasick {
   factory AhoCorasick.fromWordList(List<String> patterns,
       {bool separateBySpaces = false}) {
     // initial state is the empty word
-    List<WordState> states = [WordState(index: 0, words: [], failure: 0)];
+    final states = [WordState(index: 0, words: [], failure: 0)];
     var longest = 0;
+    // ignore: omit_local_variable_types
     Map<int, Map<String, int>> transitionMap = {};
     patterns.forEach((inputPattern) {
       final pattern = separateBySpaces ? ' $inputPattern ' : inputPattern;
-      int curStateIndex = 0;
+      var curStateIndex = 0;
       longest = max(longest, pattern.length);
       for (var i = 0; i < pattern.length; i++) {
         final stateMap = transitionMap[curStateIndex] ?? {};
@@ -55,7 +64,7 @@ class AhoCorasick {
       // follow up on other patterns those are tracked with this
       // failure map
       final queue = Queue<int>();
-      transitionMap[0].forEach((character, resState) {
+      transitionMap[0]?.forEach((character, resState) {
         states[resState] = states[resState].copyWith(
           failure: 0,
         );
@@ -87,7 +96,8 @@ class AhoCorasick {
         stateMachine: StateMachine<WordState, String>(
             states: states,
             isSuccessState: (state) => state.isFinal,
-            transition: ({WordState activeState, String input}) {
+            transition: (
+                {required WordState activeState, required String input}) {
               var curState = activeState.index;
               var endState = (transitionMap[curState] ?? {})[input] ?? -1;
 
@@ -111,10 +121,10 @@ class AhoCorasick {
   /// they can found anywhere
   final bool separateBySpaces;
 
-  Match _firstMatchLongest(String input) {
+  Match? _firstMatchLongest(String input) {
     final state = stateMachine.createState();
     final results = <Match>[];
-    var foundIdx;
+    int? foundIdx;
     var smallestStartIndex = input.length;
     for (var i = 0; i < input.length; i++) {
       if (i - (foundIdx ?? input.length) > _longestPattern) {
@@ -138,9 +148,10 @@ class AhoCorasick {
     return null;
   }
 
-  Match _fixShiftedMatch(Match match) => separateBySpaces && match != null ? Match(
-      startIndex: match.startIndex,
-      word: match.word.substring(1, match.word.length - 1))
+  Match? _fixShiftedMatch(Match? match) => separateBySpaces && match != null
+      ? Match(
+          startIndex: match.startIndex,
+          word: match.word.substring(1, match.word.length - 1))
       : match;
 
   /// returns the first match or null if none was found
@@ -150,7 +161,7 @@ class AhoCorasick {
   /// parameter will not fire when it finds `'abc'` but after it
   /// checked enough positions to find all possible longer words and then
   /// return `'abcd'`
-  Match firstMatch(String input, {bool longest = false}) {
+  Match? firstMatch(String input, {bool longest = false}) {
     final fullInput = separateBySpaces ? ' $input ' : input;
     if (longest) {
       return _fixShiftedMatch(_firstMatchLongest(fullInput));
@@ -160,7 +171,8 @@ class AhoCorasick {
       state.performStep(fullInput[i]);
       if (state.activeStateIsSuccess) {
         final word = state.activeState.words.first;
-        return _fixShiftedMatch(Match(startIndex: i - word.length + 1, word: word));
+        return _fixShiftedMatch(
+            Match(startIndex: i - word.length + 1, word: word));
       }
     }
     return null;
@@ -177,9 +189,9 @@ class AhoCorasick {
       if (state.activeStateIsSuccess) {
         results.addAll(state.activeState.words.map((word) {
           smallestStartIndex = min(smallestStartIndex, i - word.length + 1);
-          return _fixShiftedMatch(Match(
-              startIndex: i - word.length + 1, word: word));
-        }));
+          return _fixShiftedMatch(
+              Match(startIndex: i - word.length + 1, word: word));
+        }).whereNotNull());
       }
     }
     return results;

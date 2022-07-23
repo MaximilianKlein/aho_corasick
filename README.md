@@ -36,7 +36,7 @@ Edge cases like "only one character" can lead to a quadratic time complexity,
 but that is only because the number of results can be quadratic in the length of
 the text.
 
-More information at: https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+More information at: https://en.wikipedia.org/wiki/Aho–Corasick_algorithm
 
 Sadly the original paper is not open access. But there is ample material
 elsewhere.

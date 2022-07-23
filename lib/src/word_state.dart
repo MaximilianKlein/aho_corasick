@@ -1,8 +1,12 @@
 part of aho_corasick;
 
 class WordState {
-  const WordState(
-      {this.index, this.words, this.isFinal = false, this.failure = -1});
+  const WordState({
+    required this.index,
+    required this.words,
+    this.isFinal = false,
+    this.failure = -1,
+  });
 
   /// the actual word represented by this state
   final List<String> words;
@@ -17,7 +21,7 @@ class WordState {
   final int failure;
 
   WordState copyWith(
-          {int index, bool isFinal, List<String> words, int failure}) =>
+          {int? index, bool? isFinal, List<String>? words, int? failure}) =>
       WordState(
         failure: failure ?? this.failure,
         index: index ?? this.index,

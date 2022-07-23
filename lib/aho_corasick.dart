@@ -4,7 +4,6 @@
 /// to search for any of those
 library aho_corasick;
 
-import 'package:meta/meta.dart';
 import 'dart:collection';
 import 'dart:math';
 

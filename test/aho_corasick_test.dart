@@ -31,7 +31,7 @@ void main() {
       final res = aho.firstMatch(input);
       // then
       expect(res, isNotNull);
-      expect(res.startIndex, 4);
+      expect(res!.startIndex, 4);
       expect(res.word, patterns[1]);
     });
 
@@ -44,7 +44,7 @@ void main() {
       final res = aho.firstMatch(input);
       // then
       expect(res, isNotNull);
-      expect(res.startIndex, 2);
+      expect(res!.startIndex, 2);
       expect(res.word, patterns[1]);
     });
 
@@ -57,7 +57,7 @@ void main() {
       final res = aho.firstMatch(input, longest: true);
       // then
       expect(res, isNotNull);
-      expect(res.startIndex, 1);
+      expect(res!.startIndex, 1);
       expect(res.word, patterns[1]);
     });
 
@@ -72,11 +72,11 @@ void main() {
       final resLongest = aho.firstMatch(input, longest: true);
       // then
       expect(res, isNotNull);
-      expect(res.startIndex, input.indexOf(patterns[0]));
+      expect(res!.startIndex, input.indexOf(patterns[0]));
       expect(res.word, 'vier');
 
       expect(resLongest, isNotNull);
-      expect(resLongest.startIndex, input.indexOf(patterns[0]));
+      expect(resLongest!.startIndex, input.indexOf(patterns[0]));
       expect(resLongest.word, 'vier');
     });
   });
